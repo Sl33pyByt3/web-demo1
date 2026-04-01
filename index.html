@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Khám phá cải cách Hồ Quý Ly - Mảnh ghép</title>
+  <style>
+    :root{
+      --bg1: linear-gradient(135deg,#f0f8ff,#e6f0ff);
+      --primary:#0b5ed7;
+      --accent:#ffb703;
+      --success:#2ecc71;
+      --danger:#e74c3c;
+      --card:#ffffff;
+      --muted:#6b7280;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg1);
+      color:#0f1724;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:20px;
+    }
+    .app{
+      width:100%;
+      max-width:820px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.99));
+      border-radius:14px;
+      box-shadow:0 12px 40px rgba(11,78,135,0.12);
+      overflow:hidden;
+    }
+    header{
+      padding:18px 22px;
+      background:linear-gradient(90deg,var(--primary), #6aa0ff);
+      color:white;
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+    header img{width:56px;height:56px;border-radius:8px;object-fit:cover;border:2px solid rgba(255,255,255,0.12)}
+    header h1{margin:0;font-size:18px}
+    main{padding:20px; display:flex; gap:20px; align-items:flex-start; justify-content:space-between}
+    /* Left: quiz */
+    .quiz{
+      flex:1;
+      background:var(--card);
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 8px 24px rgba(11,78,135,0.06);
+    }
+    .hero{display:flex;gap:12px;align-items:center}
+    .hero .intro{flex:1}
+    .btn{
+      background:var(--accent);
+      color:#082032;
+      border:none;
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      box-shadow:0 8px 18px rgba(255,183,3,0.14);
+    }
+    .btn.secondary{background:transparent;border:2px solid rgba(11,78,135,0.08);color:var(--primary)}
+    .question{margin-top:16px}
+    .q-title{font-weight:800;color:var(--primary)}
+    .options{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+    .option{
+      padding:12px;border-radius:10px;border:2px solid rgba(11,78,135,0.08);
+      background:linear-gradient(180deg,#f7fbff,#eef6ff);
+      cursor:pointer;font-weight:700;display:flex;gap:10px;align-items:center;
+      transition:transform .12s, box-shadow .12s, background .12s;
+    }
+    .option:hover{transform:translateY(-4px);box-shadow:0 10px 20px rgba(11,78,135,0.06)}
+    .option.correct{background:linear-gradient(90deg, rgba(46,204,113,0.12), rgba(46,204,113,0.04));border-color:var(--success)}
+    .option.wrong{background:linear-gradient(90deg, rgba(231,76,60,0.08), rgba(231,76,60,0.04));border-color:var(--danger);animation:shake .45s}
+    @keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-6px)}100%{transform:translateX(0)}}
+    .feedback{margin-top:12px;font-weight:700;min-height:28px}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+    .progress{height:12px;background:#eef6ff;border-radius:999px;overflow:hidden;flex:1;margin-right:12px}
+    .progress > .fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),#6aa0ff);transition:width .45s}
+    .score{min-width:120px;text-align:right;font-weight:800;color:var(--muted)}
+    /* Right: puzzle */
+    .puzzle{
+      width:320px;
+      background:var(--card);
+      border-radius:12px;
+      padding:12px;
+      box-shadow:0 8px 24px rgba(11,78,135,0.06);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:center;
+    }
+    .puzzle h3{margin:0}
+    .puzzle-grid{
+      width:280px;height:200px;
+      display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);
+      gap:4px;
+      background:linear-gradient(180deg,#f8fbff,#ffffff);
+      padding:6px;border-radius:8px;
+    }
+    .tile{
+      background-size:300% 200%;
+      background-repeat:no-repeat;
+      border-radius:6px;
+      opacity:0.08;
+      transform:scale(0.96);
+      transition:opacity .35s ease, transform .35s ease, box-shadow .35s;
+      box-shadow:0 6px 18px rgba(11,78,135,0.04);
+    }
+    .tile.revealed{opacity:1;transform:scale(1);box-shadow:0 12px 30px rgba(11,78,135,0.12)}
+    .hint{font-size:13px;color:var(--muted);text-align:center}
+    /* responsive */
+    @media (max-width:880px){
+      main{flex-direction:column;align-items:center}
+      .puzzle{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <header>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Ho_Quy_Ly.jpg" alt="Hồ Quý Ly">
+      <div>
+        <h1>Khám phá cải cách Hồ Quý Ly</h1>
+        <p style="margin:0;font-size:13px">Trò chơi trắc nghiệm với mảnh ghép ảnh</p>
+      </div>
+    </header>
+
+    <main>
+      <!-- Quiz area -->
+      <section class="quiz" aria-live="polite">
+        <div class="hero">
+          <div class="intro">
+            <h2 style="margin:0">Bắt đầu khám phá</h2>
+            <p class="small" style="margin:4px 0 0;color:var(--muted)">Trả lời đúng mỗi câu để mở mảnh ghép ảnh.</p>
+            <div style="margin-top:10px">
+              <button class="btn" id="startBtn">Bắt đầu</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="quizArea" style="display:none">
+          <div class="question">
+            <div class="q-title" id="qNumber">Câu 1</div>
+            <h3 id="qText" style="margin:8px 0 0 0">Nội dung câu hỏi</h3>
+
+            <div class="options" id="options"></div>
+
+            <div class="feedback" id="feedback"></div>
+
+            <div class="meta">
+              <div class="progress" aria-hidden="true"><div class="fill" id="progressFill"></div></div>
+              <div class="score" id="scoreBadge">Điểm: 0</div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button class="btn" id="nextBtn" style="display:none">Tiếp theo</button>
+              <button class="btn secondary" id="restartBtn" style="display:none">Chơi lại</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Puzzle area -->
+      <aside class="puzzle">
+        <h3>Mảnh ghép ảnh</h3>
+        <div class="puzzle-grid" id="puzzleGrid" aria-hidden="false">
+          <!-- 5 tiles for 5 questions; sixth tile can be bonus -->
+          <div class="tile" id="tile0" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 0% 0%;"></div>
+          <div class="tile" id="tile1" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 50% 0%;"></div>
+          <div class="tile" id="tile2" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 100% 0%;"></div>
+          <div class="tile" id="tile3" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 0% 100%;"></div>
+          <div class="tile" id="tile4" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 50% 100%;"></div>
+          <div class="tile" id="tile5" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 100% 100%;"></div>
+        </div>
+        <div class="hint" id="puzzleHint">Mỗi câu đúng mở 1 mảnh</div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;z-index:60"></canvas>
+
+  <script>
+    // === Cấu hình câu hỏi ===
+    const questions = [
+      { q: "Chính sách hạn điền của Hồ Quý Ly quy định mỗi người chỉ được sở hữu tối đa bao nhiêu mẫu ruộng?", opts:["5 mẫu","10 mẫu","20 mẫu","30 mẫu"], ans:1, explain:"Hạn điền giới hạn nhằm ngăn quý tộc chiếm nhiều ruộng."},
+      { q: "Hồ Quý Ly phát hành tiền giấy thay cho tiền kim loại vào năm nào?", opts:["1396","1400","1407","1410"], ans:0, explain:"Năm 1396 là lần đầu phát hành tiền giấy."},
+      { q: "Trong cải cách giáo dục, Hồ Quý Ly đã đưa môn học nào vào thi cử?", opts:["Văn học dân gian","Toán học và chữ Nôm","Lịch sử và địa lý","Kinh điển Nho giáo"], ans:1, explain:"Ông chú trọng chữ Nôm và toán."},
+      { q: "Về quân sự, Hồ Quý Ly đã thực hiện cải cách gì nổi bật?", opts:["Tăng cường thủy quân","Xây dựng thành Tây Đô","Mở rộng kỵ binh","Trang bị súng"], ans:1, explain:"Xây dựng thành Tây Đô là công trình phòng thủ."},
+      { q: "Điểm hạn chế lớn nhất của các cải cách Hồ Quý Ly là gì?", opts:["Quá thiên về quân sự","Không phù hợp với thực tiễn xã hội","Bị quý tộc phản đối","Thiếu ủng hộ vua Trần"], ans:1, explain:"Cải cách chưa được dân chúng chấp nhận."}
+    ];
+
+    // === State ===
+    let idx = 0, score = 0, correctCount = 0;
+    const total = questions.length;
+
+    // === Elements ===
+    const startBtn = document.getElementById('startBtn');
+    const quizArea = document.getElementById('quizArea');
+    const qNumber = document.getElementById('qNumber');
+    const qText = document.getElementById('qText');
+    const optionsDiv = document.getElementById('options');
+    const feedback = document.getElementById('feedback');
+    const progressFill = document.getElementById('progressFill');
+    const scoreBadge = document.getElementById('scoreBadge');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const puzzleHint = document.getElementById('puzzleHint');
+
+    // tiles
+    const tiles = [];
+    for(let i=0;i<6;i++) tiles.push(document.getElementById('tile'+i));
+
+    // === Start game ===
+    startBtn.addEventListener('click', ()=>{
+      startBtn.style.display='none';
+      quizArea.style.display='';
+      idx=0; score=0; correctCount=0;
+      updateUI();
+      renderQuestion();
+    });
+
+    function renderQuestion(){
+      const item = questions[idx];
+      qNumber.textContent = `Câu ${idx+1}/${total}`;
+      qText.textContent = item.q;
+      optionsDiv.innerHTML = '';
+      feedback.textContent = '';
+      nextBtn.style.display = 'none';
+      restartBtn.style.display = 'none';
+
+      item.opts.forEach((opt,i)=>{
+        const b = document.createElement('button');
+        b.className = 'option';
+        b.type = 'button';
+        b.innerHTML = `<strong>${String.fromCharCode(65+i)}</strong>&nbsp;&nbsp;${opt}`;
+        b.addEventListener('click', ()=> handleAnswer(i,b));
+        optionsDiv.appendChild(b);
+      });
+    }
+
+    function handleAnswer(choice, btn){
+      const item = questions[idx];
+      // disable all options temporarily
+      Array.from(optionsDiv.children).forEach(el=>el.disabled=true);
+      if(choice === item.ans){
+        btn.classList.add('correct');
+        feedback.textContent = 'Chính xác! ' + item.explain;
+        score += 10; correctCount++;
+        revealTile(correctCount-1); // reveal tile index = correctCount-1
+        playCorrect();
+        nextBtn.style.display = 'inline-block';
+        restartBtn.style.display = 'inline-block';
+      } else {
+        btn.classList.add('wrong');
+        feedback.textContent = 'Sai rồi, thử lại nhé!';
+        playWrong();
+        // allow retry after short delay
+        setTimeout(()=>{
+          btn.classList.remove('wrong');
+          Array.from(optionsDiv.children).forEach(el=>el.disabled=false);
+          feedback.textContent = '';
+        },800);
+      }
+      updateUI();
+    }
+
+    nextBtn.addEventListener('click', ()=>{
+      idx++;
+      if(idx < total){
+        renderQuestion();
+      } else {
+        finishGame();
+      }
+    });
+
+    restartBtn.addEventListener('click', ()=>{
+      // reset tiles and state
+      idx = 0; score = 0; correctCount = 0;
+      tiles.forEach(t=>t.classList.remove('revealed'));
+      updateUI();
+      renderQuestion();
+    });
+
+    function updateUI(){
+      const pct = Math.round((idx/total)*100);
+      progressFill.style.width = pct + '%';
+      scoreBadge.textContent = 'Điểm: ' + score;
+      puzzleHint.textContent = `Đã mở ${correctCount}/${tiles.length} mảnh`;
+    }
+
+    function revealTile(i){
+      if(i >= 0 && i < tiles.length){
+        tiles[i].classList.add('revealed');
+      }
+      // if all tiles revealed -> celebration
+      if(correctCount >= tiles.length){
+        finishGame();
+      }
+    }
+
+    function finishGame(){
+      // final update
+      progressFill.style.width = '100%';
+      scoreBadge.textContent = 'Điểm: ' + score;
+      puzzleHint.textContent = `Hoàn thành! Mở ${correctCount}/${tiles.length} mảnh`;
+      // confetti and sound
+      spawnConfetti(120);
+      playCorrect();
+      feedback.textContent = 'Bạn đã hoàn thành! Chúc mừng 🎉';
+      nextBtn.style.display = 'none';
+    }
+
+    // === Simple sound and confetti ===
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = AudioCtx ? new AudioCtx() : null;
+    function playTone(freq=880,d=0.08){
+      if(!audioCtx) return;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type='sine'; o.frequency.value=freq;
+      g.gain.value=0.06;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
+      setTimeout(()=>{ try{o.stop()}catch(e){} }, d*1000+20);
+    }
+    function playCorrect(){ playTone(880,0.08); setTimeout(()=>playTone(1320,0.12),90); }
+    function playWrong(){ playTone(220,0.12); }
+
+    // confetti canvas
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
+    let conf = [];
+    function spawnConfetti(n=60){
+      conf = [];
+      const colors = ['#ffb703','#fb8500','#219ebc','#8ecae6','#2a9d8f','#e63946'];
+      for(let i=0;i<n;i++){
+        conf.push({
+          x: Math.random()*canvas.width,
+          y: -20 - Math.random()*200,
+          vx: (Math.random()-0.5)*4,
+          vy: 2 + Math.random()*4,
+          size: 6 + Math.random()*8,
+          color: colors[Math.floor(Math.random()*colors.length)],
+          rot: Math.random()*360,
+          rotSpeed: (Math.random()-0.5)*8
+        });
+      }
+      runConfetti();
+    }
+    function runConfetti(){
+      function frame(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        for(let p of conf){
+          p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.rot += p.rotSpeed;
+          ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+          ctx.fillStyle = p.color; ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+          ctx.restore();
+        }
+        conf = conf.filter(p=>p.y < canvas.height + 50);
+        if(conf.length>0) requestAnimationFrame(frame); else ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // === Notes about images not showing ===
+    // If your puzzle image doesn't appear:
+    // 1) Replace 'PUZZLE_IMAGE_URL' with a valid https URL or a local relative path like './img/puzzle.jpg'
+    // 2) Test the image URL by opening it directly in the browser
+    // 3) If using local file, ensure file is in same folder and path is correct
+    // 4) For development, avoid hotlinking from sites that block embedding
+
+    // === Initialize UI ===
+    updateUI();
+  </script>
+</body>
+</html>
