@@ -125,7 +125,7 @@
 <body>
   <div class="app" role="application">
     <header>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Ho_Quy_Ly.jpg" alt="Hồ Quý Ly">
+      <img src="hoquyly.jpg" alt="Hồ Quý Ly">
       <div>
         <h1>Khám phá cải cách Hồ Quý Ly</h1>
         <p style="margin:0;font-size:13px">Trò chơi trắc nghiệm với mảnh ghép ảnh</p>
@@ -172,12 +172,12 @@
         <h3>Mảnh ghép ảnh</h3>
         <div class="puzzle-grid" id="puzzleGrid" aria-hidden="false">
           <!-- 5 tiles for 5 questions; sixth tile can be bonus -->
-          <div class="tile" id="tile0" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 0% 0%;"></div>
-          <div class="tile" id="tile1" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 50% 0%;"></div>
-          <div class="tile" id="tile2" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 100% 0%;"></div>
-          <div class="tile" id="tile3" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 0% 100%;"></div>
-          <div class="tile" id="tile4" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 50% 100%;"></div>
-          <div class="tile" id="tile5" style="background-image:url('PUZZLE_IMAGE_URL'); background-position: 100% 100%;"></div>
+          <div class="tile" id="tile0" style="background-image:url('thanhnhaho.jpg'); background-position: 0% 0%;"></div>
+          <div class="tile" id="tile1" style="background-image:url('thanhnhaho.jpg'); background-position: 50% 0%;"></div>
+          <div class="tile" id="tile2" style="background-image:url('thanhnhaho.jpg'); background-position: 100% 0%;"></div>
+          <div class="tile" id="tile3" style="background-image:url('thanhnhaho.jpg'); background-position: 0% 100%;"></div>
+          <div class="tile" id="tile4" style="background-image:url('thanhnhaho.jpg'); background-position: 50% 100%;"></div>
+          <div class="tile" id="tile5" style="background-image:url('thanhnhaho.jpg'); background-position: 100% 100%;"></div>
         </div>
         <div class="hint" id="puzzleHint">Mỗi câu đúng mở 1 mảnh</div>
       </aside>
@@ -371,15 +371,6 @@
       }
       requestAnimationFrame(frame);
     }
-
-    // === Notes about images not showing ===
-    // If your puzzle image doesn't appear:
-    // 1) Replace 'PUZZLE_IMAGE_URL' with a valid https URL or a local relative path like './img/puzzle.jpg'
-    // 2) Test the image URL by opening it directly in the browser
-    // 3) If using local file, ensure file is in same folder and path is correct
-    // 4) For development, avoid hotlinking from sites that block embedding
-
-    // === Initialize UI ===
     updateUI();
   </script>
 </body>
